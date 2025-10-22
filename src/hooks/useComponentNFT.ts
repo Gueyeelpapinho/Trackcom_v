@@ -1,9 +1,10 @@
 import { useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
 import { ISSComponent, ComponentEvent } from '@/contexts/AppContext';
 
 interface UseComponentNFTReturn {
   mintComponentNFT: (component: Omit<ISSComponent, 'id' | 'nftId' | 'events'>) => Promise<string>;
-  addEventToNFT: (componentId: string, event: Omit<ComponentEvent, 'id'>) => Promise<void>;
+  addEventToNFT: (componentId: string, event: Omit<ComponentEvent, 'id'>, nftId?: string) => Promise<void>;
   getComponentHistory: (nftId: string) => Promise<ComponentEvent[]>;
   isLoading: boolean;
   error: string | null;
@@ -21,16 +22,26 @@ export const useComponentNFT = (): UseComponentNFTReturn => {
     setError(null);
 
     try {
-      // TODO: Call backend edge function to mint NFT via Hedera SDK
-      // For now, return mock NFT ID
-      const mockNftId = `NFT-ISS-${Date.now().toString().slice(-6)}`;
+      console.log('Calling Hedera mint NFT function...');
       
-      // Simulate API delay
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const { data, error: functionError } = await supabase.functions.invoke(
+        'hedera-mint-nft',
+        {
+          body: { componentData: component },
+        }
+      );
+
+      if (functionError) {
+        throw new Error(functionError.message);
+      }
+
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to mint NFT');
+      }
+
+      console.log('NFT minted successfully:', data.nftId);
       
-      console.log('Minting NFT for component:', component.name);
-      
-      return mockNftId;
+      return data.nftId;
     } catch (err: any) {
       const errorMessage = err.message || 'Failed to mint NFT';
       setError(errorMessage);
@@ -43,17 +54,35 @@ export const useComponentNFT = (): UseComponentNFTReturn => {
   // Add event to component's NFT metadata
   const addEventToNFT = async (
     componentId: string,
-    event: Omit<ComponentEvent, 'id'>
+    event: Omit<ComponentEvent, 'id'>,
+    nftId?: string
   ): Promise<void> => {
     setIsLoading(true);
     setError(null);
 
     try {
-      // TODO: Call backend edge function to add event via Hedera Consensus Service
-      // For now, simulate success
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      console.log('Calling Hedera add event function...');
       
-      console.log('Adding event to NFT:', componentId, event);
+      const { data, error: functionError } = await supabase.functions.invoke(
+        'hedera-add-event',
+        {
+          body: { 
+            componentId,
+            nftId,
+            eventData: event 
+          },
+        }
+      );
+
+      if (functionError) {
+        throw new Error(functionError.message);
+      }
+
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to add event');
+      }
+
+      console.log('Event added successfully to HCS topic:', data.topicId);
     } catch (err: any) {
       const errorMessage = err.message || 'Failed to add event';
       setError(errorMessage);

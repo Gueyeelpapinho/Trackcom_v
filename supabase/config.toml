@@ -1,1 +1,7 @@
 project_id = "lkszzqmdpneqhgmedbyd"
+
+[functions.hedera-mint-nft]
+verify_jwt = false
+
+[functions.hedera-add-event]
+verify_jwt = false

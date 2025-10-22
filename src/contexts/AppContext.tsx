@@ -181,8 +181,11 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
         id: `evt-${Date.now()}`,
       };
 
+      // Find component to get its NFT ID
+      const component = components.find(c => c.id === componentId);
+
       // Add event to Hedera blockchain
-      await addEventToNFT(componentId, eventData);
+      await addEventToNFT(componentId, eventData, component?.nftId);
 
       setComponents(prev =>
         prev.map(comp =>

@@ -20,6 +20,7 @@ import { toast } from 'sonner';
 export default function AddComponent() {
   const navigate = useNavigate();
   const { addComponent } = useApp();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     nftId: '',
@@ -31,34 +32,42 @@ export default function AddComponent() {
     specifications: '',
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!formData.name || !formData.nftId || !formData.type || !formData.location) {
+    if (!formData.name || !formData.type || !formData.location) {
       toast.error('Please fill in all required fields');
       return;
     }
 
-    const now = Date.now();
-    const newComponent: Omit<ISSComponent, 'id' | 'events'> = {
-      nftId: formData.nftId,
-      name: formData.name,
-      type: formData.type,
-      status: formData.status,
-      location: formData.location,
-      installationDate: now,
-      lastMaintenance: now,
-      nextMaintenance: now + 30 * 24 * 60 * 60 * 1000, // 30 days from now
-      metadata: {
-        manufacturer: formData.manufacturer || undefined,
-        serialNumber: formData.serialNumber || undefined,
-        specifications: formData.specifications || undefined,
-      },
-    };
+    setIsSubmitting(true);
 
-    addComponent(newComponent);
-    toast.success('Component added successfully');
-    navigate('/');
+    try {
+      const now = Date.now();
+      await addComponent({
+        nftId: formData.nftId || `NFT-ISS-${Date.now().toString().slice(-6)}`,
+        name: formData.name,
+        type: formData.type,
+        status: formData.status,
+        location: formData.location,
+        installationDate: now,
+        lastMaintenance: now,
+        nextMaintenance: now + 30 * 24 * 60 * 60 * 1000,
+        metadata: {
+          manufacturer: formData.manufacturer || undefined,
+          serialNumber: formData.serialNumber || undefined,
+          specifications: formData.specifications || undefined,
+        },
+      });
+
+      toast.success('Component added successfully and NFT minted on Hedera blockchain!');
+      navigate('/');
+    } catch (error: any) {
+      console.error('Error adding component:', error);
+      toast.error(error.message || 'Failed to add component');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -96,14 +105,17 @@ export default function AddComponent() {
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="nftId">NFT ID *</Label>
+                <Label htmlFor="nftId">NFT ID (optional)</Label>
                 <Input
                   id="nftId"
                   value={formData.nftId}
                   onChange={(e) => setFormData({ ...formData, nftId: e.target.value })}
-                  placeholder="e.g., NFT-ISS-001"
+                  placeholder="Auto-generated if empty"
                   className="bg-background font-mono"
                 />
+                <p className="text-xs text-muted-foreground">
+                  Leave empty to auto-generate an NFT ID
+                </p>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
@@ -193,15 +205,17 @@ export default function AddComponent() {
               <div className="flex gap-3 pt-4">
                 <Button
                   type="submit"
+                  disabled={isSubmitting}
                   className="flex-1 gap-2 bg-gradient-mission hover:opacity-90"
                 >
                   <Save className="h-4 w-4" />
-                  Add Component
+                  {isSubmitting ? 'Minting NFT...' : 'Add Component'}
                 </Button>
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => navigate('/')}
+                  disabled={isSubmitting}
                 >
                   Cancel
                 </Button>
