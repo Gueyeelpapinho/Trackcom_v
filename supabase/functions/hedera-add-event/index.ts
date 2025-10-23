@@ -23,6 +23,8 @@ serve(async (req) => {
   try {
     const { componentId, nftId, eventData } = await req.json();
 
+    console.log('Received request:', { componentId, nftId, eventType: eventData?.type });
+
     if (!componentId || !eventData) {
       throw new Error('Component ID and event data are required');
     }
@@ -31,13 +33,26 @@ serve(async (req) => {
     const operatorId = Deno.env.get('HEDERA_OPERATOR_ID');
     const operatorKey = Deno.env.get('HEDERA_OPERATOR_KEY');
 
+    console.log('Hedera credentials check:', { 
+      hasOperatorId: !!operatorId, 
+      hasOperatorKey: !!operatorKey,
+      operatorIdType: typeof operatorId,
+      operatorKeyType: typeof operatorKey
+    });
+
     if (!operatorId || !operatorKey) {
       throw new Error('Hedera credentials not configured');
     }
 
+    if (typeof operatorKey !== 'string' || typeof operatorId !== 'string') {
+      throw new Error('Hedera credentials must be strings');
+    }
+
+    console.log('Creating Hedera client...');
     // Create Hedera client for testnet
     const client = Client.forTestnet();
     client.setOperator(operatorId, PrivateKey.fromString(operatorKey));
+    console.log('Hedera client configured successfully');
 
     console.log('Adding event for component:', componentId);
 
