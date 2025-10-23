@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { useBlockchain } from '@/contexts/BlockchainContext';
+import { useHashConnect } from '@/hooks/useHashConnect';
 import { useComponentNFT } from '@/hooks/useComponentNFT';
 
 export interface ComponentEvent {
@@ -138,22 +138,22 @@ const mockComponents: ISSComponent[] = [
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [components, setComponents] = useState<ISSComponent[]>(mockComponents);
   
-  // Use blockchain context
+  // Use Hedera hooks
   const { 
     isConnected: walletConnected, 
-    walletAddress, 
-    connectWallet: connectBlockchainWallet,
-    disconnectWallet: disconnectBlockchainWallet,
-  } = useBlockchain();
+    accountId: walletAddress, 
+    connectWallet: connectHederaWallet,
+    disconnectWallet: disconnectHederaWallet,
+  } = useHashConnect();
   
   const { mintComponentNFT, addEventToNFT } = useComponentNFT();
 
   const connectWallet = async () => {
-    await connectBlockchainWallet();
+    await connectHederaWallet();
   };
 
   const disconnectWallet = () => {
-    disconnectBlockchainWallet();
+    disconnectHederaWallet();
   };
 
   const addComponent = async (componentData: Omit<ISSComponent, 'id' | 'events'>) => {
