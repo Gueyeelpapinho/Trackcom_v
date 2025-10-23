@@ -12,7 +12,7 @@ export const HEDERA_CONFIG = {
     description: 'Secure tracking system for ISS critical components using Hedera NFTs',
     icon: 'https://iss-sts.lovable.app/favicon.ico',
     icons: ['https://iss-sts.lovable.app/favicon.ico'],
-    url: window.location.origin,
+    url: typeof window !== 'undefined' ? window.location.origin : 'https://iss-sts.lovable.app',
   },
   
   // Network for HashConnect
