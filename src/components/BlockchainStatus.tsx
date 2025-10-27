@@ -18,13 +18,13 @@ export const BlockchainStatus = () => {
           )}
         </CardTitle>
         <CardDescription>
-          État de connexion et traçabilité
+          Connection and traceability status
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="grid gap-3">
           <div className="flex items-center justify-between">
-            <span className="text-sm text-muted-foreground">Réseau</span>
+            <span className="text-sm text-muted-foreground">Network</span>
             <Badge variant="outline" className="bg-primary/10">
               Hedera Testnet
             </Badge>
@@ -34,18 +34,18 @@ export const BlockchainStatus = () => {
             <span className="text-sm text-muted-foreground">Wallet</span>
             {walletConnected ? (
               <Badge variant="default" className="bg-green-500/10 text-green-600 border-green-500/20">
-                Connecté
+                Connected
               </Badge>
             ) : (
               <Badge variant="outline" className="text-muted-foreground">
-                Non connecté
+                Not connected
               </Badge>
             )}
           </div>
 
           {walletAddress && (
             <div className="flex flex-col gap-1 pt-2 border-t border-border/50">
-              <span className="text-xs text-muted-foreground">Adresse du compte</span>
+              <span className="text-xs text-muted-foreground">Account address</span>
               <code className="text-xs font-mono bg-muted/50 p-2 rounded border border-border/50 break-all">
                 {walletAddress}
               </code>
@@ -53,19 +53,19 @@ export const BlockchainStatus = () => {
           )}
 
           <div className="pt-2 border-t border-border/50 space-y-2">
-            <h4 className="text-sm font-semibold text-foreground">Traçabilité</h4>
+            <h4 className="text-sm font-semibold text-foreground">Traceability</h4>
             <div className="space-y-1 text-xs text-muted-foreground">
               <p className="flex items-center gap-2">
                 <CheckCircle2 className="h-3 w-3 text-green-500" />
-                Tous les composants sont enregistrés comme NFTs
+                All components are registered as NFTs
               </p>
               <p className="flex items-center gap-2">
                 <CheckCircle2 className="h-3 w-3 text-green-500" />
-                Chaque événement est enregistré sur HCS
+                Every event is recorded on HCS
               </p>
               <p className="flex items-center gap-2">
                 <CheckCircle2 className="h-3 w-3 text-green-500" />
-                Historique immuable et vérifiable
+                Immutable and verifiable history
               </p>
             </div>
           </div>

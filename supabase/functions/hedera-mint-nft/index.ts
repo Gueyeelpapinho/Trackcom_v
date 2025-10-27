@@ -38,15 +38,24 @@ serve(async (req) => {
       hasOperatorId: !!operatorId, 
       hasOperatorKey: !!operatorKey,
       operatorIdType: typeof operatorId,
-      operatorKeyType: typeof operatorKey
+      operatorKeyType: typeof operatorKey,
+      operatorIdLength: operatorId?.length,
+      operatorKeyLength: operatorKey?.length
     });
 
     if (!operatorId || !operatorKey) {
-      throw new Error('Hedera credentials not configured');
+      console.error('Missing Hedera credentials');
+      throw new Error('Hedera credentials not configured. Please set HEDERA_OPERATOR_ID and HEDERA_OPERATOR_KEY in environment variables.');
     }
 
     if (typeof operatorKey !== 'string' || typeof operatorId !== 'string') {
+      console.error('Invalid credential types:', { operatorKeyType: typeof operatorKey, operatorIdType: typeof operatorId });
       throw new Error('Hedera credentials must be strings');
+    }
+
+    if (operatorId.trim() === '' || operatorKey.trim() === '') {
+      console.error('Empty Hedera credentials');
+      throw new Error('Hedera credentials cannot be empty');
     }
 
     console.log('Creating Hedera client...');
