@@ -10,8 +10,9 @@ export const HEDERA_CONFIG = {
   appMetadata: {
     name: 'ISS Component Tracker',
     description: 'Secure tracking system for ISS critical components using Hedera NFTs',
-    icon: 'https://iss-sts.lovable.app/favicon.ico',
-    icons: ['https://iss-sts.lovable.app/favicon.ico'],
+    projectId: 'iss-component-tracker',
+    icon: typeof window !== 'undefined' ? `${window.location.origin}/favicon.ico` : 'https://iss-sts.lovable.app/favicon.ico',
+    icons: [typeof window !== 'undefined' ? `${window.location.origin}/favicon.ico` : 'https://iss-sts.lovable.app/favicon.ico'],
     url: typeof window !== 'undefined' ? window.location.origin : 'https://iss-sts.lovable.app',
   },
   

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from 'react';
-import { HashConnect } from 'hashconnect';
+import { HashConnect, SessionData } from 'hashconnect';
 import { LedgerId } from '@hashgraph/sdk';
 import { HEDERA_CONFIG } from '@/lib/hedera/config';
 
@@ -12,77 +12,82 @@ interface UseHashConnectReturn {
   error: string | null;
 }
 
-let hashconnect: any = null;
+let hashconnect: HashConnect | null = null;
 
 export const useHashConnect = (): UseHashConnectReturn => {
   const [isConnected, setIsConnected] = useState(false);
   const [accountId, setAccountId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [topic, setTopic] = useState<string>('');
+  const [pairingString, setPairingString] = useState<string>('');
 
   // Initialize HashConnect
   useEffect(() => {
     const initHashConnect = async () => {
       try {
         if (!hashconnect) {
-          const ledgerId = LedgerId.fromString('testnet');
+          console.log('Initializing HashConnect...');
+          
           hashconnect = new HashConnect(
-            ledgerId,
-            HEDERA_CONFIG.appMetadata.url,
+            LedgerId.TESTNET,
+            HEDERA_CONFIG.appMetadata.projectId || 'iss-tracker',
             HEDERA_CONFIG.appMetadata,
-            true // multiAccount
+            true
           );
 
+          // Initialize connection
+          await hashconnect.init();
+          console.log('HashConnect initialized successfully');
+
+          // Get pairing string for connection
+          const pairing = hashconnect.pairingString;
+          setPairingString(pairing);
+          console.log('Pairing string ready:', pairing);
+
           // Set up pairing event listener
-          if (hashconnect.pairingEvent) {
-            hashconnect.pairingEvent.on((pairingData: any) => {
-              console.log('Pairing event:', pairingData);
-              if (pairingData.accountIds && pairingData.accountIds.length > 0) {
-                setAccountId(pairingData.accountIds[0]);
-                setIsConnected(true);
-                setError(null);
-                localStorage.setItem('hederaAccountId', pairingData.accountIds[0]);
-              }
-              if (pairingData.topic) {
-                setTopic(pairingData.topic);
-              }
-            });
-          }
+          hashconnect.pairingEvent.on((data: SessionData) => {
+            console.log('Pairing event received:', data);
+            const accountIds = data.accountIds;
+            if (accountIds && accountIds.length > 0) {
+              const account = accountIds[0];
+              console.log('Connected to account:', account);
+              setAccountId(account);
+              setIsConnected(true);
+              setError(null);
+              setIsLoading(false);
+              localStorage.setItem('hederaAccountId', account);
+            }
+          });
 
           // Set up disconnect event listener
-          if (hashconnect.disconnectionEvent) {
-            hashconnect.disconnectionEvent.on(() => {
-              console.log('Disconnected from wallet');
-              setIsConnected(false);
-              setAccountId(null);
-              localStorage.removeItem('hederaAccountId');
-            });
-          }
+          hashconnect.disconnectionEvent.on(() => {
+            console.log('Wallet disconnected');
+            setIsConnected(false);
+            setAccountId(null);
+            setIsLoading(false);
+            localStorage.removeItem('hederaAccountId');
+          });
 
-          // Check for existing pairing
+          // Check for existing connection
           const savedAccountId = localStorage.getItem('hederaAccountId');
           if (savedAccountId) {
+            console.log('Found saved account, will reconnect if still valid:', savedAccountId);
             setAccountId(savedAccountId);
             setIsConnected(true);
           }
         }
       } catch (err) {
         console.error('Failed to initialize HashConnect:', err);
-        setError('Failed to initialize wallet connection');
+        setError('Failed to initialize wallet connection. Please refresh the page.');
       }
     };
 
     initHashConnect();
-
-    return () => {
-      // Cleanup handled by HashConnect internally
-    };
   }, []);
 
   const connectWallet = useCallback(async () => {
     if (!hashconnect) {
-      setError('HashConnect not initialized');
+      setError('HashConnect not initialized. Please refresh the page.');
       return;
     }
 
@@ -90,41 +95,28 @@ export const useHashConnect = (): UseHashConnectReturn => {
     setError(null);
 
     try {
-      // Initialize and pair with wallet
-      const initData = await hashconnect.init(
-        HEDERA_CONFIG.appMetadata,
-        HEDERA_CONFIG.hashConnectNetwork,
-        false
-      );
-      
-      setTopic(initData.topic);
-      
-      // Open pairing modal
-      if (hashconnect.openPairingModal) {
-        hashconnect.openPairingModal();
-      } else if (hashconnect.connectToLocalWallet) {
-        await hashconnect.connectToLocalWallet();
-      }
+      console.log('Opening HashPack pairing modal...');
+      hashconnect.openPairingModal();
     } catch (err: any) {
-      console.error('Failed to connect wallet:', err);
-      setError(err.message || 'Failed to connect wallet. Please install HashPack wallet extension.');
-    } finally {
+      console.error('Failed to open pairing modal:', err);
+      setError(err.message || 'Failed to connect wallet. Please install HashPack extension.');
       setIsLoading(false);
     }
   }, []);
 
   const disconnectWallet = useCallback(() => {
-    if (hashconnect && topic) {
+    if (hashconnect) {
       try {
-        hashconnect.disconnect(topic);
+        console.log('Disconnecting wallet...');
+        hashconnect.disconnect();
+        setIsConnected(false);
+        setAccountId(null);
+        localStorage.removeItem('hederaAccountId');
       } catch (err) {
         console.error('Failed to disconnect:', err);
       }
     }
-    setIsConnected(false);
-    setAccountId(null);
-    localStorage.removeItem('hederaAccountId');
-  }, [topic]);
+  }, []);
 
   return {
     isConnected,
