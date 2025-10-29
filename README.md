@@ -31,10 +31,13 @@ npm run dev:all     # both
 
  The TRACKCOMproject goes beyond inventory management; it establishes a foundation of
  digital trust for future space operations.
- Key Benefits for NASA
+ 
+ ### Key Benefits for NASA
  • Increased Safety : Reduction of operational risk thanks to an undisputed maintenance
  history.
+ 
  • Predictive Maintenance : Reliable data allows for optimizing the remaining lifespan of
  parts and planning replacements with high accuracy.
+ 
  • Interplanetary Logistics : The developed model is directly applicable to future orbital
  structures (Gateway) or lunar bases, which require logistical autonomy.
