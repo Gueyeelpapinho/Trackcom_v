@@ -51,7 +51,7 @@ const mockComponents: ISSComponent[] = [
     location: 'Module Destiny - Sector 3',
     installationDate: Date.now() - 90 * 24 * 60 * 60 * 1000,
     lastMaintenance: Date.now() - 15 * 24 * 60 * 60 * 1000,
-    nextMaintenance: Date.now() + 15 * 24 * 60 * 60 * 1000,
+    nextMaintenance: new Date('2026-02-15T00:00:00Z').getTime(),
     events: [
       {
         id: 'evt-1',
@@ -83,7 +83,7 @@ const mockComponents: ISSComponent[] = [
     location: 'Solar Array Section 4',
     installationDate: Date.now() - 180 * 24 * 60 * 60 * 1000,
     lastMaintenance: Date.now() - 45 * 24 * 60 * 60 * 1000,
-    nextMaintenance: Date.now() + 5 * 24 * 60 * 60 * 1000,
+    nextMaintenance: new Date('2026-01-10T00:00:00Z').getTime(),
     events: [
       {
         id: 'evt-3',
@@ -115,7 +115,7 @@ const mockComponents: ISSComponent[] = [
     location: 'Module Harmony - Life Support',
     installationDate: Date.now() - 200 * 24 * 60 * 60 * 1000,
     lastMaintenance: Date.now() - 60 * 24 * 60 * 60 * 1000,
-    nextMaintenance: Date.now() - 1 * 24 * 60 * 60 * 1000, // Overdue
+    nextMaintenance: new Date('2025-12-10T00:00:00Z').getTime(),
     events: [
       {
         id: 'evt-5',
@@ -142,7 +142,7 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     // Mock wallet connection
     await new Promise(resolve => setTimeout(resolve, 1000));
     setWalletConnected(true);
-    setWalletAddress('0.0.123456');
+    setWalletAddress('0.0.7119203');
   };
 
   const disconnectWallet = () => {
