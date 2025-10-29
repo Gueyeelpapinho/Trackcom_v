@@ -1,5 +1,4 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { useHashPack } from '@/hooks/useHashPack';
 
 export interface ComponentEvent {
   id: string;
@@ -136,14 +135,19 @@ const mockComponents: ISSComponent[] = [
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [components, setComponents] = useState<ISSComponent[]>(mockComponents);
-  const { isConnected, accountId, connect, disconnect } = useHashPack();
+  const [walletConnected, setWalletConnected] = useState(false);
+  const [walletAddress, setWalletAddress] = useState<string | null>(null);
 
   const connectWallet = async () => {
-    await connect();
+    // Mock wallet connection
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setWalletConnected(true);
+    setWalletAddress('0.0.7119203');
   };
 
   const disconnectWallet = () => {
-    disconnect();
+    setWalletConnected(false);
+    setWalletAddress(null);
   };
 
   const addComponent = (componentData: Omit<ISSComponent, 'id' | 'events'>) => {
@@ -178,8 +182,8 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     <AppContext.Provider
       value={{
         components,
-        walletConnected: isConnected,
-        walletAddress: accountId,
+        walletConnected,
+        walletAddress,
         connectWallet,
         disconnectWallet,
         addComponent,
