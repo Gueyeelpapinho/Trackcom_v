@@ -11,6 +11,13 @@ node_modules
 dist
 dist-ssr
 *.local
+.env
+data
+.vite
+.cache
+assets/*.psd
+assets/*.ai
+assets/*.sketch
 
 # Editor directories and files
 .vscode/*
