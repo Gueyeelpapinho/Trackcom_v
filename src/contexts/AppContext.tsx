@@ -1,6 +1,4 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { useHashConnect } from '@/hooks/useHashConnect';
-import { useComponentNFT } from '@/hooks/useComponentNFT';
 
 export interface ComponentEvent {
   id: string;
@@ -35,8 +33,8 @@ interface AppContextType {
   walletAddress: string | null;
   connectWallet: () => Promise<void>;
   disconnectWallet: () => void;
-  addComponent: (component: Omit<ISSComponent, 'id' | 'events'>) => Promise<void>;
-  addEvent: (componentId: string, event: Omit<ComponentEvent, 'id'>) => Promise<void>;
+  addComponent: (component: Omit<ISSComponent, 'id' | 'events'>) => void;
+  addEvent: (componentId: string, event: Omit<ComponentEvent, 'id'>) => void;
   getComponent: (id: string) => ISSComponent | undefined;
 }
 
@@ -137,67 +135,43 @@ const mockComponents: ISSComponent[] = [
 
 export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const [components, setComponents] = useState<ISSComponent[]>(mockComponents);
-  
-  // Use Hedera hooks
-  const { 
-    isConnected: walletConnected, 
-    accountId: walletAddress, 
-    connectWallet: connectHederaWallet,
-    disconnectWallet: disconnectHederaWallet,
-  } = useHashConnect();
-  
-  const { mintComponentNFT, addEventToNFT } = useComponentNFT();
+  const [walletConnected, setWalletConnected] = useState(false);
+  const [walletAddress, setWalletAddress] = useState<string | null>(null);
 
   const connectWallet = async () => {
-    await connectHederaWallet();
+    // Mock wallet connection
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    setWalletConnected(true);
+    setWalletAddress('0.0.123456');
   };
 
   const disconnectWallet = () => {
-    disconnectHederaWallet();
+    setWalletConnected(false);
+    setWalletAddress(null);
   };
 
-  const addComponent = async (componentData: Omit<ISSComponent, 'id' | 'events'>) => {
-    try {
-      // Mint NFT on Hedera for this component
-      const nftId = await mintComponentNFT(componentData);
-      
-      const newComponent: ISSComponent = {
-        ...componentData,
-        id: `comp-${Date.now()}`,
-        nftId,
-        events: [],
-      };
-      setComponents(prev => [...prev, newComponent]);
-    } catch (error) {
-      console.error('Failed to add component:', error);
-      throw error;
-    }
+  const addComponent = (componentData: Omit<ISSComponent, 'id' | 'events'>) => {
+    const newComponent: ISSComponent = {
+      ...componentData,
+      id: `comp-${Date.now()}`,
+      events: [],
+    };
+    setComponents(prev => [...prev, newComponent]);
   };
 
-  const addEvent = async (componentId: string, eventData: Omit<ComponentEvent, 'id'>) => {
-    try {
-      const newEvent: ComponentEvent = {
-        ...eventData,
-        id: `evt-${Date.now()}`,
-      };
+  const addEvent = (componentId: string, eventData: Omit<ComponentEvent, 'id'>) => {
+    const newEvent: ComponentEvent = {
+      ...eventData,
+      id: `evt-${Date.now()}`,
+    };
 
-      // Find component to get its NFT ID
-      const component = components.find(c => c.id === componentId);
-
-      // Add event to Hedera blockchain
-      await addEventToNFT(componentId, eventData, component?.nftId);
-
-      setComponents(prev =>
-        prev.map(comp =>
-          comp.id === componentId
-            ? { ...comp, events: [...comp.events, newEvent] }
-            : comp
-        )
-      );
-    } catch (error) {
-      console.error('Failed to add event:', error);
-      throw error;
-    }
+    setComponents(prev =>
+      prev.map(comp =>
+        comp.id === componentId
+          ? { ...comp, events: [...comp.events, newEvent] }
+          : comp
+      )
+    );
   };
 
   const getComponent = (id: string) => {

@@ -26,18 +26,10 @@ export const WalletConnect = () => {
   };
 
   if (walletConnected && walletAddress) {
-    const shortAddress = `${walletAddress.slice(0, 8)}...${walletAddress.slice(-6)}`;
-    
     return (
       <div className="flex items-center gap-3">
-        <div className="flex items-center gap-2 px-4 py-2 rounded-lg bg-gradient-to-r from-primary/20 to-secondary/20 border border-primary/30 backdrop-blur-sm">
-          <div className="h-2 w-2 rounded-full bg-green-500 animate-pulse" />
-          <div className="flex flex-col">
-            <p className="text-xs font-medium text-muted-foreground">Connected</p>
-            <p className="text-sm font-mono font-semibold text-foreground" title={walletAddress}>
-              {shortAddress}
-            </p>
-          </div>
+        <div className="px-3 py-1.5 rounded-lg bg-primary/10 border border-primary/20">
+          <p className="text-xs font-mono text-primary">{walletAddress}</p>
         </div>
         <Button
           variant="outline"

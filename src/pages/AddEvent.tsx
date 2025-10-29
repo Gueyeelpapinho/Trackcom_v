@@ -22,7 +22,6 @@ export default function AddEvent() {
   const { id } = useParams<{ id: string }>();
   const { addEvent, getComponent } = useApp();
   const component = id ? getComponent(id) : undefined;
-  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [formData, setFormData] = useState({
     type: '' as ComponentEvent['type'],
@@ -30,7 +29,7 @@ export default function AddEvent() {
     performedBy: '',
   });
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!formData.type || !formData.description || !formData.performedBy) {
@@ -43,25 +42,16 @@ export default function AddEvent() {
       return;
     }
 
-    setIsSubmitting(true);
+    const newEvent: Omit<ComponentEvent, 'id'> = {
+      type: formData.type,
+      timestamp: Date.now(),
+      description: formData.description,
+      performedBy: formData.performedBy,
+    };
 
-    try {
-      const newEvent: Omit<ComponentEvent, 'id'> = {
-        type: formData.type,
-        timestamp: Date.now(),
-        description: formData.description,
-        performedBy: formData.performedBy,
-      };
-
-      await addEvent(id, newEvent);
-      toast.success('Event recorded successfully on Hedera blockchain!');
-      navigate(`/component/${id}`);
-    } catch (error: any) {
-      console.error('Error adding event:', error);
-      toast.error(error.message || 'Failed to record event');
-    } finally {
-      setIsSubmitting(false);
-    }
+    addEvent(id, newEvent);
+    toast.success('Event added successfully');
+    navigate(`/component/${id}`);
   };
 
   if (!component) {
@@ -152,17 +142,15 @@ export default function AddEvent() {
               <div className="flex gap-3 pt-4">
                 <Button
                   type="submit"
-                  disabled={isSubmitting}
                   className="flex-1 gap-2 bg-gradient-mission hover:opacity-90"
                 >
                   <Save className="h-4 w-4" />
-                  {isSubmitting ? 'Recording on blockchain...' : 'Save Event'}
+                  Save Event
                 </Button>
                 <Button
                   type="button"
                   variant="outline"
                   onClick={() => navigate(`/component/${id}`)}
-                  disabled={isSubmitting}
                 >
                   Cancel
                 </Button>

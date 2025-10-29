@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useApp } from '@/contexts/AppContext';
 import { ComponentCard } from '@/components/ComponentCard';
-import { BlockchainStatus } from '@/components/BlockchainStatus';
 import { Header } from '@/components/Header';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -52,11 +51,6 @@ export default function Dashboard() {
       <Header />
       
       <main className="container mx-auto px-4 py-8">
-        {/* Blockchain Status */}
-        <div className="mb-8">
-          <BlockchainStatus />
-        </div>
-
         {/* Stats Overview */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
           <Card className="bg-card/50 backdrop-blur-sm">
