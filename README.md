@@ -29,7 +29,7 @@ npm run dev:all     # both
 
  ## Strategic Impact and Future Prospects
 
- The TRACKCOMproject goes beyond inventory management; it establishes a foundation of
+ The TRACKCOM project goes beyond inventory management; it establishes a foundation of
  digital trust for future space operations.
  
  ### Key Benefits for NASA
@@ -41,3 +41,10 @@ npm run dev:all     # both
  
  • Interplanetary Logistics : The developed model is directly applicable to future orbital
  structures (Gateway) or lunar bases, which require logistical autonomy.
+
+
+
+ # Hedera Certification link
+ Sanskriti Verma:  (https://drive.google.com/file/d/14JgnsvU848ZDASNrWDF-tuW9siiryDbA/view?usp=sharing) or download it directly here (https://certs.hashgraphdev.com/2cf155dd-9815-420a-a67b-2140d11cccaa.pdf)
+ 
+ Elhadji Maguette Gueye: (https://drive.google.com/file/d/1S4tGoSk7tNSsjQZ5EEh6gHZrRqSenp4J/view?usp=sharing) or download it directly here (https://certs.hashgraphdev.com/cab34311-662e-4c00-95ec-4746f35c8593.pdf)
