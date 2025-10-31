@@ -13,15 +13,17 @@ export const Header = () => {
             className="flex items-center gap-3 cursor-pointer group"
             onClick={() => navigate('/')}
           >
-            <div className="rounded-lg overflow-hidden group-hover:animate-pulse-glow">
-              <img src={trackcomLogo} alt="TrackCom Logo" className="h-12 w-12 object-contain" />
-            </div>
+            <img 
+              src={trackcomLogo} 
+              alt="TRACKCOM Logo" 
+              className="h-12 w-12 object-contain group-hover:scale-105 transition-transform"
+            />
             <div>
               <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-                ISS Component Tracker
+                TRACKCOM
               </h1>
               <p className="text-xs text-muted-foreground">
-                Hedera Blockchain Integration
+                Secure Component Tracking
               </p>
             </div>
           </div>
