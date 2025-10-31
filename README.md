@@ -48,3 +48,7 @@ npm run dev:all     # both
  Sanskriti Verma:  (https://drive.google.com/file/d/14JgnsvU848ZDASNrWDF-tuW9siiryDbA/view?usp=sharing) or download it directly here (https://certs.hashgraphdev.com/2cf155dd-9815-420a-a67b-2140d11cccaa.pdf)
  
  Elhadji Maguette Gueye: (https://drive.google.com/file/d/1S4tGoSk7tNSsjQZ5EEh6gHZrRqSenp4J/view?usp=sharing) or download it directly here (https://certs.hashgraphdev.com/cab34311-662e-4c00-95ec-4746f35c8593.pdf)
+
+## YOUTUBE And Pitch deck
+YouTube: https://youtu.be/oMG6gd-Zdpg?si=33mkIgeX6WQEuNq9
+webapp: https://preview--star-chain.lovable.app/
