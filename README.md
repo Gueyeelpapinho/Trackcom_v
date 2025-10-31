@@ -50,5 +50,5 @@ npm run dev:all     # both
  Elhadji Maguette Gueye: (https://drive.google.com/file/d/1S4tGoSk7tNSsjQZ5EEh6gHZrRqSenp4J/view?usp=sharing) or download it directly here (https://certs.hashgraphdev.com/cab34311-662e-4c00-95ec-4746f35c8593.pdf)
 
 ## YOUTUBE And Pitch deck
-YouTube: https://youtu.be/oMG6gd-Zdpg?si=33mkIgeX6WQEuNq9
+YouTube: https://youtu.be/oMG6gd-Zdpg?si=33mkIgeX6WQEuNq9 &
 webapp: https://preview--star-chain.lovable.app/
