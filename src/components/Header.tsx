@@ -1,6 +1,6 @@
 import { WalletConnect } from './WalletConnect';
-import { Satellite } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import trackcomLogo from '@/assets/trackcom-logo.jpg';
 
 export const Header = () => {
   const navigate = useNavigate();
@@ -13,8 +13,8 @@ export const Header = () => {
             className="flex items-center gap-3 cursor-pointer group"
             onClick={() => navigate('/')}
           >
-            <div className="p-2 rounded-lg bg-gradient-mission group-hover:animate-pulse-glow">
-              <Satellite className="h-6 w-6 text-white" />
+            <div className="rounded-lg overflow-hidden group-hover:animate-pulse-glow">
+              <img src={trackcomLogo} alt="TrackCom Logo" className="h-12 w-12 object-contain" />
             </div>
             <div>
               <h1 className="text-xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
